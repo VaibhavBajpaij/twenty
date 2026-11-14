@@ -508,6 +508,7 @@ describe('View tools', () => {
             }),
           }),
         );
+        expect(viewService.createOne).toHaveBeenCalledTimes(1);
         expect(viewService.findById).toHaveBeenCalledTimes(1);
         expect(viewService.findById).toHaveBeenCalledWith(
           mockViewId,
