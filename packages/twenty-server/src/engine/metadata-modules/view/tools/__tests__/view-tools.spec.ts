@@ -457,6 +457,42 @@ describe('View tools', () => {
         });
       });
 
+      it('should create a column scope view owned by a view field', async () => {
+        const ownerViewFieldId = '20202020-0000-4000-8000-0000000000aa';
+
+        viewService.createOne.mockResolvedValue({
+          id: 'scope-view-id',
+          name: 'Open items',
+          objectMetadataId: mockObjectMetadataId,
+          type: ViewType.TABLE_WIDGET,
+          icon: 'IconList',
+          visibility: ViewVisibility.WORKSPACE,
+          ownerViewFieldId,
+        } as any);
+
+        const tools = buildViewTools({
+          workspaceId: mockWorkspaceId,
+          userWorkspaceId: mockUserWorkspaceId,
+        });
+
+        const { result } = await tools.create_view.execute({
+          name: 'Open items',
+          objectNameSingular: mockObjectNameSingular,
+          type: ViewType.TABLE_WIDGET,
+          ownerViewFieldId,
+        });
+
+        expect(viewService.createOne).toHaveBeenCalledWith(
+          expect.objectContaining({
+            createViewInput: expect.objectContaining({
+              type: ViewType.TABLE_WIDGET,
+              ownerViewFieldId,
+            }),
+          }),
+        );
+        expect(result).toEqual(expect.objectContaining({ ownerViewFieldId }));
+      });
+
       it('should create view fields when fieldNames is provided', async () => {
         const createdView = {
           id: 'new-view-id',
